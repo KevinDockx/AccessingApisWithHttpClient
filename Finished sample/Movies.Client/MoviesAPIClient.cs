@@ -7,7 +7,7 @@ namespace Movies.Client;
 
 public class MoviesAPIClient
 {
-    private HttpClient _client;
+    private readonly HttpClient _client;
     private readonly JsonSerializerOptionsWrapper _jsonSerializerOptionsWrapper;
 
     public MoviesAPIClient(HttpClient client,

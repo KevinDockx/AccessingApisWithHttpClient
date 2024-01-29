@@ -3,14 +3,9 @@ using Movies.API.Entities;
 
 namespace Movies.API.DbContexts;
 
-public class MoviesDbContext : DbContext
+public class MoviesDbContext(DbContextOptions<MoviesDbContext> options) : DbContext(options)
 {
     public DbSet<Movie> Movies { get; set; } = null!;
-
-    public MoviesDbContext(DbContextOptions<MoviesDbContext> options)
-        : base(options)
-    {
-    }
 
     // seed the database with data
     protected override void OnModelCreating(ModelBuilder modelBuilder)

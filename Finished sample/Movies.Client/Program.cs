@@ -32,8 +32,10 @@ using IHost host = Host.CreateDefaultBuilder(args)
         //})
        .ConfigurePrimaryHttpMessageHandler(() =>
        {
-           var handler = new SocketsHttpHandler();
-           handler.AutomaticDecompression = System.Net.DecompressionMethods.GZip;
+           var handler = new SocketsHttpHandler
+           {
+               AutomaticDecompression = System.Net.DecompressionMethods.GZip
+           };
            return handler;
        });
 
@@ -48,8 +50,10 @@ using IHost host = Host.CreateDefaultBuilder(args)
 
             .ConfigurePrimaryHttpMessageHandler(() =>
             {
-                var handler = new SocketsHttpHandler();
-                handler.AutomaticDecompression = System.Net.DecompressionMethods.GZip;
+                var handler = new SocketsHttpHandler
+                {
+                    AutomaticDecompression = System.Net.DecompressionMethods.GZip
+                };
                 //handler.AllowAutoRedirect = false;
                 return handler;
             });

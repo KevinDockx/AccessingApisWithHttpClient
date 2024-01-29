@@ -1,18 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Movies.API.DbContexts;
-using Movies.API.Entities; 
+using Movies.API.Entities;
 
 namespace Movies.API.Services;
 
-public class MoviesRepository : IMoviesRepository 
+public class MoviesRepository(MoviesDbContext context) : IMoviesRepository 
 {
-    private MoviesDbContext _context;
-
-    public MoviesRepository(MoviesDbContext context)
-    {
-        _context = context ?? 
+    private readonly MoviesDbContext _context = context ??
             throw new ArgumentNullException(nameof(context));
-    }
 
     public async Task<Movie?> GetMovieAsync(Guid movieId)
     {
@@ -41,21 +36,13 @@ public class MoviesRepository : IMoviesRepository
 
     public void AddMovie(Movie movieToAdd)
     {
-        if (movieToAdd == null)
-        {
-            throw new ArgumentNullException(nameof(movieToAdd));
-        }
-
+        ArgumentNullException.ThrowIfNull(movieToAdd);
         _context.Add(movieToAdd);
     }
 
     public void DeleteMovie(Movie movieToDelete)
     {
-        if (movieToDelete == null)
-        {
-            throw new ArgumentNullException(nameof(movieToDelete));
-        }
-
+        ArgumentNullException.ThrowIfNull(movieToDelete);
         _context.Remove(movieToDelete);
     }
 

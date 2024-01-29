@@ -2,28 +2,18 @@
 using Microsoft.AspNetCore.Mvc;
 using Movies.API.InternalModels;
 using Movies.API.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Movies.API.Controllers
 {
     [Route("api/movies/{movieId}/trailers")]
     [ApiController]
-    public class TrailersController : ControllerBase
+    public class TrailersController(ITrailersRepository trailersRepository,
+        IMapper mapper) : ControllerBase
     {
-        private readonly ITrailersRepository _trailersRepository;
-        private readonly IMapper _mapper;
-
-        public TrailersController(ITrailersRepository trailersRepository,
-            IMapper mapper)
-        {
-            _trailersRepository = trailersRepository ?? 
+        private readonly ITrailersRepository _trailersRepository = trailersRepository ??
                 throw new ArgumentNullException(nameof(trailersRepository));
-            _mapper = mapper ?? 
+        private readonly IMapper _mapper = mapper ??
                 throw new ArgumentNullException(nameof(mapper));
-        }
 
         [HttpGet("{trailerId}", Name = "GetTrailer")]
         public async Task<ActionResult<Models.Trailer>> GetTrailer(Guid movieId, 

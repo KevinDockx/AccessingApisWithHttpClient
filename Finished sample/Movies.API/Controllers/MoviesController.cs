@@ -8,25 +8,18 @@ namespace Movies.API.Controllers;
 
 [Route("api/movies")]
 [ApiController]
-public class MoviesController : ControllerBase
+public class MoviesController(IMoviesRepository moviesRepository,
+    IMapper mapper) : ControllerBase
 {
-    private readonly IMoviesRepository _moviesRepository;
-    private readonly IMapper _mapper;
-
-    public MoviesController(IMoviesRepository moviesRepository, 
-        IMapper mapper)
-    {
-        _moviesRepository = moviesRepository ?? 
+    private readonly IMoviesRepository _moviesRepository = moviesRepository ??
             throw new ArgumentNullException(nameof(moviesRepository));
-        _mapper = mapper ?? 
+    private readonly IMapper _mapper = mapper ??
             throw new ArgumentNullException(nameof(mapper));
-    }
 
     [HttpGet(Name = "GetMovies")]
     public async Task<ActionResult<IEnumerable<Models.Movie>>> GetMovies()
     {
-        var movieEntities = await _moviesRepository.GetMoviesAsync();
-        var mapped = _mapper.Map<IEnumerable<Models.Movie>>(movieEntities);
+        var movieEntities = await _moviesRepository.GetMoviesAsync(); 
         return Ok(_mapper.Map<IEnumerable<Models.Movie>>(movieEntities));
     }
      

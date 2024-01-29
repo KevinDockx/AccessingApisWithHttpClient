@@ -9,7 +9,9 @@ public class JsonSerializerOptionsWrapper
     public JsonSerializerOptionsWrapper()
     {
         Options = new JsonSerializerOptions(
-            JsonSerializerDefaults.Web);
-        Options.DefaultBufferSize = 10;
+            JsonSerializerDefaults.Web)
+        {
+            DefaultBufferSize = 10
+        };
     }
 }

@@ -6,19 +6,13 @@ using Movies.Client.Models;
 
 namespace Movies.Client.Services;
 
-public class CustomMessageHandlersSamples : IIntegrationService
+public class CustomMessageHandlersSamples(IHttpClientFactory httpClientFactory,
+         JsonSerializerOptionsWrapper jsonSerializerOptionsWrapper) : IIntegrationService
 {
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly JsonSerializerOptionsWrapper _jsonSerializerOptionsWrapper;
-
-    public CustomMessageHandlersSamples(IHttpClientFactory httpClientFactory,
-             JsonSerializerOptionsWrapper jsonSerializerOptionsWrapper)
-    {
-        _jsonSerializerOptionsWrapper = jsonSerializerOptionsWrapper ??
-            throw new ArgumentNullException(nameof(jsonSerializerOptionsWrapper));
-        _httpClientFactory = httpClientFactory ??
+    private readonly IHttpClientFactory _httpClientFactory = httpClientFactory ??
             throw new ArgumentNullException(nameof(httpClientFactory));
-    }
+    private readonly JsonSerializerOptionsWrapper _jsonSerializerOptionsWrapper = jsonSerializerOptionsWrapper ??
+            throw new ArgumentNullException(nameof(jsonSerializerOptionsWrapper));
 
     public async Task RunAsync()
     {
@@ -56,10 +50,11 @@ public class CustomMessageHandlersSamples : IIntegrationService
                 response.EnsureSuccessStatusCode();
             }
 
-            var stream = await response.Content.ReadAsStreamAsync();
+            var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
             var movie = await JsonSerializer.DeserializeAsync<Movie>(
               stream,
-              _jsonSerializerOptionsWrapper.Options);
+              _jsonSerializerOptionsWrapper.Options,
+              cancellationToken);
 
         }
 

@@ -20,7 +20,7 @@ public class Poster
     public Poster(Guid id, 
         Guid movieId,
         string name, 
-        byte[] bytes)
+        byte[] bytes) 
     {
         Id = id;
         MovieId = movieId;

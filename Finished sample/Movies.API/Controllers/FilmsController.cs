@@ -1,15 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Movies.API.Controllers
+namespace Movies.API.Controllers;
+
+[Route("api/films")]
+[ApiController]
+public class FilmsController : ControllerBase
 {
-    [Route("api/films")]
-    [ApiController]
-    public class FilmsController : ControllerBase
+    [HttpGet]
+    public IActionResult GetFilms()
     {
-        [HttpGet]
-        public IActionResult GetFilms()
-        {
-            return RedirectToAction("GetMovies", "Movies");
-        }
+        return RedirectToAction("GetMovies", "Movies");
     }
 }

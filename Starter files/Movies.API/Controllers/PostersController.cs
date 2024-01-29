@@ -11,19 +11,13 @@ namespace Movies.API.Controllers;
 
 [Route("api/movies/{movieId}/posters")]
 [ApiController]
-public class PostersController : ControllerBase
+public class PostersController(IPostersRepository postersRepository,
+    IMapper mapper) : ControllerBase
 {
-    private readonly IPostersRepository _postersRepository;
-    private readonly IMapper _mapper;
-
-    public PostersController(IPostersRepository postersRepository,
-        IMapper mapper)
-    {
-        _postersRepository = postersRepository ?? 
+    private readonly IPostersRepository _postersRepository = postersRepository ??
             throw new ArgumentNullException(nameof(postersRepository));
-        _mapper = mapper ??
+    private readonly IMapper _mapper = mapper ??
             throw new ArgumentNullException(nameof(mapper));
-    }
 
     [HttpGet("{posterId}", Name = "GetPoster")]
     public async Task<ActionResult<Models.Poster>> GetPoster(Guid movieId, 

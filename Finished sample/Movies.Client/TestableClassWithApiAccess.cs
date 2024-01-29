@@ -5,17 +5,11 @@ using System.Text.Json;
 
 namespace Movies.Client;
 
-public class TestableClassWithApiAccess
+public class TestableClassWithApiAccess(HttpClient httpClient,
+        JsonSerializerOptionsWrapper jsonSerializerOptionsWrapper)
 {
-    private readonly HttpClient _httpClient;
-    private readonly JsonSerializerOptionsWrapper _jsonSerializerOptionsWrapper;
-
-    public TestableClassWithApiAccess(HttpClient httpClient,
-            JsonSerializerOptionsWrapper jsonSerializerOptionsWrapper)
-    {
-        _httpClient = httpClient;
-        _jsonSerializerOptionsWrapper = jsonSerializerOptionsWrapper;
-    }
+    private readonly HttpClient _httpClient = httpClient;
+    private readonly JsonSerializerOptionsWrapper _jsonSerializerOptionsWrapper = jsonSerializerOptionsWrapper;
 
     public async Task<Movie?> GetMovieAsync(
     CancellationToken cancellationToken)
@@ -49,10 +43,11 @@ public class TestableClassWithApiAccess
 
                 response.EnsureSuccessStatusCode();
 
-                var stream = await response.Content.ReadAsStreamAsync();
+                var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
                 return await JsonSerializer.DeserializeAsync<Movie>(
                     stream,
-                  _jsonSerializerOptionsWrapper.Options);
+                  _jsonSerializerOptionsWrapper.Options,
+                  cancellationToken);
             }
         }
         return null;

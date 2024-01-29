@@ -27,7 +27,7 @@ public class Trailer
         string? description)
     {
         Id = id;
-        MovieId = MovieId;
+        MovieId = movieId;
         Name = name;
         Bytes = bytes;
         Description = description; 

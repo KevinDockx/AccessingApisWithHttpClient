@@ -6,15 +6,11 @@ using System.Text;
 
 namespace Movies.Client.Services;
 
-public class PartialUpdateSamples : IIntegrationService
+public class PartialUpdateSamples(IHttpClientFactory httpClientFactory) : IIntegrationService
 {
-    private readonly IHttpClientFactory _httpClientFactory;
-
-    public PartialUpdateSamples(IHttpClientFactory httpClientFactory)
-    {
-        _httpClientFactory = httpClientFactory ??
+    private readonly IHttpClientFactory _httpClientFactory = httpClientFactory ??
            throw new ArgumentNullException(nameof(httpClientFactory));
-    }
+
     public async Task RunAsync()
     {
         // await PatchResourceAsync();

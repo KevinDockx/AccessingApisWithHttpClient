@@ -5,23 +5,16 @@ using System.Text.Json;
 
 namespace Movies.Client.Services;
 
-public class HttpClientFactorySamples : IIntegrationService
+public class HttpClientFactorySamples(IHttpClientFactory httpClientFactory,
+         JsonSerializerOptionsWrapper jsonSerializerOptionsWrapper,
+         MoviesAPIClient moviesAPIClient) : IIntegrationService
 {
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly JsonSerializerOptionsWrapper _jsonSerializerOptionsWrapper;
-    private readonly MoviesAPIClient _moviesAPIClient;
-
-    public HttpClientFactorySamples(IHttpClientFactory httpClientFactory,
-             JsonSerializerOptionsWrapper jsonSerializerOptionsWrapper,
-             MoviesAPIClient moviesAPIClient)
-    {
-        _jsonSerializerOptionsWrapper = jsonSerializerOptionsWrapper ??
-            throw new ArgumentNullException(nameof(jsonSerializerOptionsWrapper));
-        _moviesAPIClient = moviesAPIClient ?? 
-            throw new ArgumentNullException(nameof(moviesAPIClient));
-        _httpClientFactory = httpClientFactory ??
+    private readonly IHttpClientFactory _httpClientFactory = httpClientFactory ??
             throw new ArgumentNullException(nameof(httpClientFactory));
-    }
+    private readonly JsonSerializerOptionsWrapper _jsonSerializerOptionsWrapper = jsonSerializerOptionsWrapper ??
+            throw new ArgumentNullException(nameof(jsonSerializerOptionsWrapper));
+    private readonly MoviesAPIClient _moviesAPIClient = moviesAPIClient ??
+            throw new ArgumentNullException(nameof(moviesAPIClient));
 
     public async Task RunAsync()
     {

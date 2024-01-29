@@ -7,19 +7,13 @@ using System.Text.Json;
 
 namespace Movies.Client.Services;
 
-public class FaultsAndErrorsSamples : IIntegrationService
+public class FaultsAndErrorsSamples(IHttpClientFactory httpClientFactory,
+         JsonSerializerOptionsWrapper jsonSerializerOptionsWrapper) : IIntegrationService
 {
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly JsonSerializerOptionsWrapper _jsonSerializerOptionsWrapper;
-
-    public FaultsAndErrorsSamples(IHttpClientFactory httpClientFactory,
-             JsonSerializerOptionsWrapper jsonSerializerOptionsWrapper)
-    {
-        _jsonSerializerOptionsWrapper = jsonSerializerOptionsWrapper ??
-            throw new ArgumentNullException(nameof(jsonSerializerOptionsWrapper));
-        _httpClientFactory = httpClientFactory ??
+    private readonly IHttpClientFactory _httpClientFactory = httpClientFactory ??
             throw new ArgumentNullException(nameof(httpClientFactory));
-    }
+    private readonly JsonSerializerOptionsWrapper _jsonSerializerOptionsWrapper = jsonSerializerOptionsWrapper ??
+            throw new ArgumentNullException(nameof(jsonSerializerOptionsWrapper));
 
     public async Task RunAsync()
     {
@@ -61,10 +55,11 @@ public class FaultsAndErrorsSamples : IIntegrationService
                 response.EnsureSuccessStatusCode();
             }
 
-            var stream = await response.Content.ReadAsStreamAsync();
+            var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
             var movie = await JsonSerializer.DeserializeAsync<Movie>(
                 stream,
-                _jsonSerializerOptionsWrapper.Options);
+                _jsonSerializerOptionsWrapper.Options,
+                cancellationToken);
 
         }
     }
@@ -102,11 +97,12 @@ public class FaultsAndErrorsSamples : IIntegrationService
                     if (response.StatusCode == HttpStatusCode.BadRequest)
                     {
                         // read out the response body and log it to the console window
-                        var errorStream = await response.Content.ReadAsStreamAsync();
+                        var errorStream = await response.Content.ReadAsStreamAsync(cancellationToken);
 
                         var errorAsProblemDetails = await JsonSerializer.DeserializeAsync<ExtendedProblemDetailsWithErrors>(
                         errorStream, 
-                        _jsonSerializerOptionsWrapper.Options);
+                        _jsonSerializerOptionsWrapper.Options,
+                        cancellationToken);
 
                         var errors = errorAsProblemDetails?.Errors;
                         Console.WriteLine(errorAsProblemDetails?.Title);
@@ -121,10 +117,11 @@ public class FaultsAndErrorsSamples : IIntegrationService
                     response.EnsureSuccessStatusCode();
                 }
 
-                var stream = await response.Content.ReadAsStreamAsync();
+                var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
                 var movie = await JsonSerializer.DeserializeAsync<Movie>(
                     stream,
-                    _jsonSerializerOptionsWrapper.Options);
+                    _jsonSerializerOptionsWrapper.Options,
+                    cancellationToken);
             }
         }
     }

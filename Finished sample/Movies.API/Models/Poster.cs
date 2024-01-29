@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Movies.API.Models;
+﻿namespace Movies.API.Models;
 
 public class Poster
 {

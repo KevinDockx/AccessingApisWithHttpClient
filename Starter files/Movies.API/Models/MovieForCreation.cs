@@ -1,5 +1,4 @@
-﻿using Movies.API.Entities;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Movies.API.Models;
 

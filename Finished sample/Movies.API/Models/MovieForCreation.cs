@@ -1,5 +1,4 @@
-﻿using Movies.API.Entities;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Movies.API.Models;
 
@@ -26,7 +25,7 @@ public class MovieForCreation
        DateTimeOffset releaseDate, 
        Guid directorId,
        string? genre,
-       string? description)
+       string? description) 
     { 
         DirectorId = directorId;
         Title = title;

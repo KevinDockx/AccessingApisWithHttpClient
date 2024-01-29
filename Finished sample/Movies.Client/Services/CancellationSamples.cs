@@ -5,22 +5,15 @@ using System.Text.Json;
 
 namespace Movies.Client.Services;
 
-public class CancellationSamples : IIntegrationService
+public class CancellationSamples(IHttpClientFactory httpClientFactory,
+         JsonSerializerOptionsWrapper jsonSerializerOptionsWrapper) : IIntegrationService
 {
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly JsonSerializerOptionsWrapper _jsonSerializerOptionsWrapper;
-    private CancellationTokenSource _cancellationTokenSource =
-        new CancellationTokenSource();
-
-    public CancellationSamples(IHttpClientFactory httpClientFactory,
-             JsonSerializerOptionsWrapper jsonSerializerOptionsWrapper)
-    {
-        _jsonSerializerOptionsWrapper = jsonSerializerOptionsWrapper ??
-            throw new ArgumentNullException(nameof(jsonSerializerOptionsWrapper));
-        _httpClientFactory = httpClientFactory ??
+    private readonly IHttpClientFactory _httpClientFactory = httpClientFactory ??
             throw new ArgumentNullException(nameof(httpClientFactory));
-    }
-
+    private readonly JsonSerializerOptionsWrapper _jsonSerializerOptionsWrapper = jsonSerializerOptionsWrapper ??
+            throw new ArgumentNullException(nameof(jsonSerializerOptionsWrapper));
+    private readonly CancellationTokenSource _cancellationTokenSource =
+        new();
 
     public async Task RunAsync()
     {
@@ -46,13 +39,14 @@ public class CancellationSamples : IIntegrationService
             using (var response = await httpClient.SendAsync(request,
              HttpCompletionOption.ResponseHeadersRead, cancellationToken))
             {
-                var stream = await response.Content.ReadAsStreamAsync();
+                var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
 
                 response.EnsureSuccessStatusCode();
 
                 var poster = await JsonSerializer.DeserializeAsync<Trailer>(
                     stream,
-                    _jsonSerializerOptionsWrapper.Options);
+                    _jsonSerializerOptionsWrapper.Options,
+                    cancellationToken);
             }
         }
         catch (OperationCanceledException ocException)
